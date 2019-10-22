@@ -25,13 +25,20 @@ typedef struct rank {
 void readFile(FILE** file, char** code);
 void createList(line* lineHeader, FILE* file, char *code);
 void freeList(line* lineHeader);
+void euclideanDistance(line* lineHeader, rank* distanceRank, int k);
 
 int main() {
 	FILE* file = NULL;
 	char* code = NULL;
+	printf("%s","K:");
+	int k = 0;
+    scanf("%d", &k);
+	rank* distanceRank = malloc(k * sizeof(rank));
+
 	readFile(&file, &code);
 	line *lineHeader = (line*)malloc(sizeof(line));
 	createList(lineHeader, file, code);
+	euclideanDistance(lineHeader, distanceRank, k);
 	freeList(lineHeader);
 	return 0;
 }
@@ -53,10 +60,10 @@ void createList(line* lineHeader, FILE* file, char *code) {
 	size_t n = 0;
 	int c = 0;
 	int isAlpha = 0;
+	column *columnptr = NULL;
+	column *columnptrPrevious = NULL;
 	line *lineListPointer = lineHeader;
-	column *columnHeader = (column*)malloc(sizeof(column));
-	column *columnptr = columnHeader;
-	lineListPointer->firstColumn = columnHeader;
+	lineListPointer->firstColumn = NULL;
 	lineListPointer->classification = NULL;
 	// Read Character after Character till End of File
 	while (c = fgetc(file)) {
@@ -72,18 +79,38 @@ void createList(line* lineHeader, FILE* file, char *code) {
 			if (isAlpha) {
 				lineListPointer->classification = malloc(n);
 				strncpy(lineListPointer->classification, code, n);
+				isAlpha = 0;
 			}
 			else {
+				if (lineListPointer->firstColumn == NULL) {
+					columnptr = (column*)malloc(sizeof(column));
+					lineListPointer->firstColumn = columnptr;
+				}
+				else {
+					columnptr->nextColumn = (column*)malloc(sizeof(column));
+					columnptrPrevious = columnptr;
+					columnptr = columnptr->nextColumn;
+				}
 				columnptr->value = atof(code);
 			}
 			if (c == EOF) {
-				columnptr->nextColumn = NULL;
+				if (lineListPointer->classification == NULL) {
+					lineListPointer->classification = malloc(n);
+					strncpy(lineListPointer->classification, code, n);
+					columnptrPrevious->nextColumn = NULL;
+					free(columnptr);
+					columnptr = NULL;
+				}
+				else {
+					columnptr->nextColumn = NULL;
+				}
 				lineListPointer->nextLine = NULL;
 				break;
 			} else if (c == '\n') {
 				if (lineListPointer->classification == NULL) {
 					lineListPointer->classification = malloc(n);
 					strncpy(lineListPointer->classification, code, n);
+					columnptrPrevious->nextColumn = NULL;
 					free(columnptr);
 					columnptr = NULL;
 				}
@@ -94,16 +121,11 @@ void createList(line* lineHeader, FILE* file, char *code) {
 				lineListPointer->nextLine = newLine;
 				lineListPointer = lineListPointer->nextLine;
 				lineListPointer->classification = NULL;
-				columnptr = (column*)malloc(sizeof(column));
-				lineListPointer->firstColumn = columnptr;
-			} else {
-				columnptr->nextColumn = (column*)malloc(sizeof(column));
-				columnptr = columnptr->nextColumn;
+				lineListPointer->firstColumn = NULL;
 			}
 			n = 0;
 		}
 	}
-	lineListPointer->nextLine = NULL;
 }
 
 void freeList(line* lineHeader) {
@@ -118,4 +140,8 @@ void freeList(line* lineHeader) {
 		lineHeader = lineHeader->nextLine;
 		free(currLine);
 	}
+}
+
+void euclideanDistance(line* lineHeader, rank* distanceRank, int k) {
+
 }
