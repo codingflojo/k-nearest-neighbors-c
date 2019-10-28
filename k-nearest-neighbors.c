@@ -24,8 +24,9 @@ typedef struct rank {
 
 void readFile(FILE** file, char** code);
 void createList(line* lineHeader, FILE* file, char *code);
+void readLine(line* classificationHeader);
 void freeList(line* lineHeader);
-void euclideanDistance(line* lineHeader, rank* distanceRank, int k);
+void euclideanDistance(line* lineHeader, line* classificationHeader, rank* distanceRank, int k);
 
 int main() {
 	FILE* file = NULL;
@@ -33,12 +34,17 @@ int main() {
 	printf("%s","K:");
 	int k = 0;
     scanf("%d", &k);
+	line *classificationHeader = (line*)malloc(sizeof(line));
+	readLine(classificationHeader);
 	rank* distanceRank = malloc(k * sizeof(rank));
 
 	readFile(&file, &code);
 	line *lineHeader = (line*)malloc(sizeof(line));
 	createList(lineHeader, file, code);
-	euclideanDistance(lineHeader, distanceRank, k);
+	euclideanDistance(lineHeader, classificationHeader, distanceRank, k);
+	for (int i = 0; i < k; i++) {
+		printf("%s %s %f\n", "Classification", distanceRank[i].linePointer->classification, distanceRank[i].distance);
+	}
 	freeList(lineHeader);
 	return 0;
 }
@@ -142,6 +148,57 @@ void freeList(line* lineHeader) {
 	}
 }
 
-void euclideanDistance(line* lineHeader, rank* distanceRank, int k) {
+void readLine(line* classificationHeader) {
+	char str[1024];
+	char c = 'y';
+	column *columnptrPrevious = NULL;
+	line *lineListPointer = classificationHeader;
+	column *columnptr = (column*)malloc(sizeof(column));
+	lineListPointer->firstColumn = columnptr;
+	lineListPointer->classification = NULL;
+	while (c != 'n' && c != 'N') {
+		printf("%s", "Please Enter a Number:");
+		scanf("%lf", &columnptr->value);
+		printf("%s", "do you want to add a new dimension y/n:");
+		scanf(" %c", &c);
+		if (c != 'n' && c != 'N') {
+			columnptr->nextColumn = (column*)malloc(sizeof(column));
+			columnptr = columnptr->nextColumn;
+		}
+	}
+	columnptr->nextColumn = NULL;
+}
 
+void euclideanDistance(line* lineHeader, line* classificationHeader, rank* distanceRank, int k) {
+	int round = 0;
+	while (lineHeader != NULL) {
+		double sum = 0;
+		column* currColumn = lineHeader->firstColumn;
+		column* currColumnClassification = classificationHeader->firstColumn;
+		while (currColumn != NULL || currColumnClassification != NULL) {
+			sum += pow((currColumnClassification != NULL ? currColumnClassification->value : 0) - (currColumn != NULL ? currColumn->value : 0), 2.0);
+			if (currColumn != NULL) {
+				currColumn = currColumn->nextColumn;
+			}
+			if (currColumnClassification != NULL) {
+				currColumnClassification = currColumnClassification->nextColumn;
+			}
+		}
+		rank *newRank = (rank*)malloc(sizeof(rank));
+		newRank->distance = sqrt(sum);
+		newRank->linePointer = lineHeader;
+		if (round < k) {
+			distanceRank[round++] = *newRank;
+		}
+		else {
+			for (int i = 0; i < k; i++) {
+				if (distanceRank[i].distance > newRank->distance) {
+					rank rankHelper = distanceRank[i];
+					distanceRank[i] = *newRank;
+					newRank = &rankHelper;
+				}
+			}
+		}
+		lineHeader = lineHeader->nextLine;
+	}
 }
