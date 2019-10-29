@@ -24,27 +24,32 @@ typedef struct rank {
 
 void readFile(FILE** file, char** code);
 void createList(line* lineHeader, FILE* file, char *code);
-void readLine(line* classificationHeader);
+void readUserInput(line* classificationHeader);
 void freeList(line* lineHeader);
-void euclideanDistance(line* lineHeader, line* classificationHeader, rank* distanceRank, int k);
+void ranking(line* lineHeader, line* classificationHeader, rank* distanceRank, int k);
+double euclideanDistance(column* currColumn, column* currColumnClassification);
+void readK(int * k);
+void printResult(rank* distanceRank, int k);
 
 int main() {
 	FILE* file = NULL;
 	char* code = NULL;
-	printf("%s","K:");
-	int k = 0;
-    scanf("%d", &k);
-	line *classificationHeader = (line*)malloc(sizeof(line));
-	readLine(classificationHeader);
-	rank* distanceRank = malloc(k * sizeof(rank));
-
+	char c = 'y';
 	readFile(&file, &code);
 	line *lineHeader = (line*)malloc(sizeof(line));
 	createList(lineHeader, file, code);
-	euclideanDistance(lineHeader, classificationHeader, distanceRank, k);
-	for (int i = 0; i < k; i++) {
-		printf("%s %s %f\n", "Classification", distanceRank[i].linePointer->classification, distanceRank[i].distance);
-	}
+	
+	do {
+		int k = 0;
+		readK(&k);
+		line *classificationHeader = (line*)malloc(sizeof(line));
+		readUserInput(classificationHeader);
+		rank* distanceRank = malloc(k * sizeof(rank));
+		ranking(lineHeader, classificationHeader, distanceRank, k);
+		printResult(distanceRank, k);
+		printf("%s", "\ndo you want to classify a new Entry y/n: ");
+		scanf(" %c", &c);
+	} while (c != 'n' && c != 'N');
 	freeList(lineHeader);
 	return 0;
 }
@@ -134,6 +139,14 @@ void createList(line* lineHeader, FILE* file, char *code) {
 	}
 }
 
+void printResult(rank* distanceRank, int k) {
+	printf("%s", "\n############################\n");
+	for (int i = 0; i < k; i++) {
+		printf("%s %s %s %f\n", "Classification: ", distanceRank[i].linePointer->classification, "distance: ", distanceRank[i].distance);
+	}
+	printf("%s", "############################\n");
+}
+
 void freeList(line* lineHeader) {
 	while (lineHeader != NULL) {
 		column* currColumn = lineHeader->firstColumn;
@@ -148,7 +161,7 @@ void freeList(line* lineHeader) {
 	}
 }
 
-void readLine(line* classificationHeader) {
+void readUserInput(line* classificationHeader) {
 	char str[1024];
 	char c = 'y';
 	column *columnptrPrevious = NULL;
@@ -157,9 +170,9 @@ void readLine(line* classificationHeader) {
 	lineListPointer->firstColumn = columnptr;
 	lineListPointer->classification = NULL;
 	while (c != 'n' && c != 'N') {
-		printf("%s", "Please Enter a Number:");
+		printf("%s", "Please Enter a Value: ");
 		scanf("%lf", &columnptr->value);
-		printf("%s", "do you want to add a new dimension y/n:");
+		printf("%s", "do you want to add a new dimension y/n: ");
 		scanf(" %c", &c);
 		if (c != 'n' && c != 'N') {
 			columnptr->nextColumn = (column*)malloc(sizeof(column));
@@ -169,24 +182,12 @@ void readLine(line* classificationHeader) {
 	columnptr->nextColumn = NULL;
 }
 
-void euclideanDistance(line* lineHeader, line* classificationHeader, rank* distanceRank, int k) {
+void ranking(line* lineHeader, line* classificationHeader, rank* distanceRank, int k) {
 	int round = 0;
 	while (lineHeader != NULL) {
-		double sum = 0;
-		column* currColumn = lineHeader->firstColumn;
-		column* currColumnClassification = classificationHeader->firstColumn;
-		while (currColumn != NULL || currColumnClassification != NULL) {
-			sum += pow((currColumnClassification != NULL ? currColumnClassification->value : 0) - (currColumn != NULL ? currColumn->value : 0), 2.0);
-			if (currColumn != NULL) {
-				currColumn = currColumn->nextColumn;
-			}
-			if (currColumnClassification != NULL) {
-				currColumnClassification = currColumnClassification->nextColumn;
-			}
-		}
 		rank *newRank = (rank*)malloc(sizeof(rank));
-		newRank->distance = sqrt(sum);
-		newRank->linePointer = lineHeader;
+		newRank->distance = sqrt(euclideanDistance(lineHeader->firstColumn, classificationHeader->firstColumn));
+		newRank->linePointer = lineHeader; 
 		if (round < k) {
 			distanceRank[round++] = *newRank;
 		}
@@ -201,4 +202,24 @@ void euclideanDistance(line* lineHeader, line* classificationHeader, rank* dista
 		}
 		lineHeader = lineHeader->nextLine;
 	}
+}
+
+
+double euclideanDistance(column* currColumn, column* currColumnClassification) {
+	double sum = 0;
+	while (currColumn != NULL || currColumnClassification != NULL) {
+		sum += pow((currColumnClassification != NULL ? currColumnClassification->value : 0) - (currColumn != NULL ? currColumn->value : 0), 2.0);
+		if (currColumn != NULL) {
+			currColumn = currColumn->nextColumn;
+		}
+		if (currColumnClassification != NULL) {
+			currColumnClassification = currColumnClassification->nextColumn;
+		}
+	}
+	return sum;
+}
+
+void readK(int* k) {
+	printf("%s", "Please Enter a Value for K: ");
+	scanf("%d", k);
 }
