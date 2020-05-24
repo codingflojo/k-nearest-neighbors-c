@@ -4,7 +4,7 @@ k-nearest neighbours algorithm programed in c
 This is a simple implementation of the k-nearest-neighbours algorithm written in c. The algorithm for classification is based on the euclidean distance between two vectors. First the distance between a new vector and every vector in the datasets is calculated, then the k nearest distances are used to classify the new vector.
 
 
-# euclidean Distance
+# Euclidean Distance
 
 ![equation](https://latex.codecogs.com/svg.latex?%5Csqrt%7B%5Csum_%7Bi%3D1%7D%5E%7Bn%7D%28q_i-p_i%29%5E2%7D)
 
