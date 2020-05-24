@@ -9,8 +9,10 @@ This is a simple implementation of the k-nearest-neighbours algorithm written in
 ![equation](https://latex.codecogs.com/svg.latex?%5Csqrt%7B%5Csum_%7Bi%3D1%7D%5E%7Bn%7D%28q_i-p_i%29%5E2%7D)
 
 For:
-(X1, Y1, Z1) = (2, 3, 4)
-(X2, Y2, Z2) = (5, 6, 7)
+
+![equation](https://latex.codecogs.com/svg.latex?%5Cbegin%7Bpmatrix%7D%20x_%7B1%7D%20%5C%5C%20y_%7B1%7D%20%5C%5C%20z_%7B1%7D%20%5Cend%7Bpmatrix%7D%20%3D%20%5Cbegin%7Bpmatrix%7D%202%20%5C%5C%203%20%5C%5C%204%20%5Cend%7Bpmatrix%7D)
+
+![equation](https://latex.codecogs.com/svg.latex?%5Cbegin%7Bpmatrix%7D%20x_%7B2%7D%20%5C%5C%20y_%7B2%7D%20%5C%5C%20z_%7B2%7D%20%5Cend%7Bpmatrix%7D%20%3D%20%5Cbegin%7Bpmatrix%7D%205%20%5C%5C%206%20%5C%5C%207%20%5Cend%7Bpmatrix%7D)
 
 d = Distance
 
