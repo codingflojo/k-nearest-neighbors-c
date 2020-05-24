@@ -6,7 +6,7 @@ This is a simple implementation of the k-nearest-neighbours algorithm written in
 
 # euclidean Distance
 
-Formula: <img src="https://bit.ly/3gp5Fwb" align="center" border="0" alt="\sqrt{\sum_{i=1}^{n}(q_i-p_i)^2}" width="117" height="68" />
+![equation](https://latex.codecogs.com/svg.latex?%5Csqrt%7B%5Csum_%7Bi%3D1%7D%5E%7Bn%7D%28q_i-p_i%29%5E2%7D)
 
 For:
 (X1, Y1, Z1) = (2, 3, 4)
@@ -14,17 +14,12 @@ For:
 
 d = Distance
 
-1.Step:
-<img src="https://bit.ly/2ZA8q7E" align="center" border="0" alt="d = \sqrt{(5-2)^2 + (6-3)^2 + (7-4)^2}" width="287" height="26" />
+![equation](https://latex.codecogs.com/svg.latex?d%20%3D%20%5Csqrt%7B%285-2%29%5E2%20&plus;%20%286-3%29%5E2%20&plus;%20%287-4%29%5E2%7D)
 
-2.Step:
-<img src="https://bit.ly/2LYACcc" align="center" border="0" alt="d = \sqrt{(3)^2 + (3)^2 + (3)^2}" width="194" height="26" />
+![equation](https://latex.codecogs.com/svg.latex?d%20%3D%20%5Csqrt%7B%283%29%5E2%20&plus;%20%283%29%5E2%20&plus;%20%283%29%5E2%7D)
 
-3.Step:
-<img src="https://bit.ly/2zqqiar" align="center" border="0" alt="d = \sqrt{9 + 9 + 9}" width="125" height="26" />
+![equation](https://latex.codecogs.com/svg.latex?d%20%3D%20%5Csqrt%7B9%20&plus;%209%20&plus;%209%7D)
 
-4.Step:
-<img src="https://bit.ly/2LTOxAt" align="center" border="0" alt="d = \sqrt{27}" width="74" height="26" />
+![equation](https://latex.codecogs.com/svg.latex?d%20%3D%20%5Csqrt%7B27%7D)
 
-5.Step:
-<img src="https://bit.ly/2AYxZ8j" align="center" border="0" alt="d = 5.196152" width="118" height="15" />
+![equation](https://latex.codecogs.com/svg.latex?d%20%3D%205.196152)
